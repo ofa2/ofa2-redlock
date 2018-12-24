@@ -6,7 +6,9 @@ interface IConfig {
   [key: string]: any;
 }
 
-export default function lift(config: IConfig) {
+// eslint-disable-next-line no-unused-vars
+export default function lift(this: { config: IConfig; redlock?: Redlock }) {
+  let { config } = this;
   let { prefix, connection: connectionName } = config.redlock;
 
   let connectionConfig = config.connections[connectionName];
@@ -43,11 +45,11 @@ export default function lift(config: IConfig) {
     )
   );
 
-  // @ts-ignore
-  this.redlock = {
-    lock(resource: string, ttl: number) {
-      let lockKey = prefix + resource;
-      return redlock.lock(lockKey, ttl);
-    },
+  let originLock = redlock.lock.bind(redlock);
+  redlock.lock = function lock(resource: string, ttl: number) {
+    let lockKey = prefix + resource;
+    return originLock(lockKey, ttl);
   };
+
+  this.redlock = redlock;
 }
