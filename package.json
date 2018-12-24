@@ -16,7 +16,6 @@
     "d-ts": "./node_modules/.bin/ts-node --project tsconfig.json --files config/declaration/index.ts"
   },
   "dependencies": {
-    "loadsh": "^0.0.3",
     "lodash": "^4.17.11",
     "redis": "^2.8.0",
     "redlock": "^3.1.2",
